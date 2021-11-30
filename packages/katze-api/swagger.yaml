@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: |
-    Katze API is an API for cats.
+    Katze API is an API for cats. Katze means Cat in German :-)
     You can find out more about Swagger at
     [http://swagger.io](http://swagger.io) or on
     [irc.freenode.net, #swagger](http://swagger.io/irc/).
@@ -22,10 +22,7 @@ tags:
   - name: katze
     description: Everything about cats
     externalDocs:
-      description: Find out more
-      url: 'http://swagger.io'
-    externalDocs:
-      description: Find out more about our store
+      description: Find out more about swagger
       url: 'http://swagger.io'
 paths:
   /cat:
@@ -149,7 +146,7 @@ components:
         name:
           type: string
           example: Milo
-        name:
+        color:
           type: string
           example: Black
         tags:
@@ -175,7 +172,7 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/cat'
-      description: cat object that needs to be added to the store
+      description: cat object that needs to be added
       required: true
   securitySchemes:
     catstore_auth:
