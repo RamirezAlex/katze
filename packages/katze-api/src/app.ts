@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
@@ -14,11 +14,11 @@ const catsDb = new db();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/:page/:limit', (req, res) => {
+app.get('/list', (req, res) => {
   const { page, limit } = req.query;
   const cats = catsDb.listCats({
-    page: page ? parseInt(page as string) : 0,
-    limit: limit ? parseInt(limit as string) : 20
+    page: page ? parseInt(page as string) : 1,
+    limit: limit ? parseInt(limit as string) : 3
   });
   res.send(cats);
 });
@@ -34,14 +34,28 @@ app.get('/:catId', (req, res) => {
   res.send(cat);
 });
 
-
 app.put('/:catId', (req, res) => {
+  const { catId } = req.params;
+  const { name, color, tags } = req.body;
+  const newCat: CatInput = {
+    name,
+    color,
+    tags
+  };
+  if (!catId) {
+    res.status(400).send('Invalid ID supplied, please provide a catId');
+  }
+  catsDb.updateCat(catId, newCat);
   res.send('Hello World!');
 });
 
 app.post('/', (req, res) => {
-  const { body } = req;
-  const newCat: CatInput = body;
+  const { name, color, tags } = req.body;
+  const newCat: CatInput = {
+    name,
+    color,
+    tags
+  };
   try {
     const cat: Cat = catsDb.createCat(newCat);
     res.send(cat);

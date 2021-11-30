@@ -18,7 +18,7 @@ export class Katze {
 
   }
 
-  listCats(options: {
+  async listCats(options: {
     page?: number
     limit?: number,
     searchTerm?: string
@@ -28,6 +28,7 @@ export class Katze {
     if (page) url += `?page=${page}`;
     if (limit) url += `&limit=${limit}`
     if (searchTerm) url += `&searchTerm=${searchTerm}`
-    this.apiClient.get(url);
+    const data = await this.apiClient.get(url);
+    return data;
   }
 }

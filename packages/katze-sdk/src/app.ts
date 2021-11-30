@@ -1,16 +1,20 @@
 import { Katze } from "./Katze";
 
-const katze = new Katze();
 
-katze.create({
-  name: 'Milo',
-  color: 'Black',
-  tags: ['cute', 'puppy', 'colombia']
-});
+(async () => {
+  const katze = new Katze();
 
-const cats = katze.listCats({
-  page: 1,
-  limit: 3
-});
+  katze.create({
+    name: 'Milo',
+    color: 'Black',
+    tags: ['cute', 'puppy', 'colombia']
+  });
 
-console.log(cats);
+  const cats = await katze.listCats({
+    page: 1,
+    limit: 3
+  });
+
+  console.log(cats.data);
+})();
+

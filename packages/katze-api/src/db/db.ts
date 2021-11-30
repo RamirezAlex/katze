@@ -22,16 +22,21 @@ export class db {
     return this.cats.delete(catId);
   }
 
-  public updateCat () {
+  public updateCat (catId: string, newCat: CatInput) {
+    if (!this.cats.has(catId)) {
+      throw 'Cat not found'
+    }
 
+    this.cats.set(catId, newCat);
+    return this.cats.get(catId);
   }
 
   public listCats (options: {
-    page?: number,
-    limit?: number
+    page: number,
+    limit: number
   }) {
-    const cats = Array.from(this.cats.values())
-    return cats;
+    const cats = Array.from(this.cats.values());
+    return cats.slice((options.page - 1) * options.limit, options.limit);
   }
 
   public searchCats (options: {
