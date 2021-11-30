@@ -11,15 +11,31 @@ const port = 3000;
 
 const catsDb = new db();
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  console.log('h', catsDb.listCats());
-  res.send(catsDb.listCats());
+app.get('/:page/:limit', (req, res) => {
+  const { page, limit } = req.query;
+  const cats = catsDb.listCats({
+    page: page ? parseInt(page as string) : 0,
+    limit: limit ? parseInt(limit as string) : 20
+  });
+  res.send(cats);
 });
 
-app.put('/', (req, res) => {
+app.get('/:catId', (req, res) => {
+  const { catId } = req.params;
+  const cat = catsDb.searchCats({
+    catId
+  });
+  if (!cat) {
+    res.status(404).send('Cat not found');
+  }
+  res.send(cat);
+});
+
+
+app.put('/:catId', (req, res) => {
   res.send('Hello World!');
 });
 
@@ -27,16 +43,19 @@ app.post('/', (req, res) => {
   const { body } = req;
   const newCat: CatInput = body;
   try {
-    const cat = catsDb.createCat(newCat);
+    const cat: Cat = catsDb.createCat(newCat);
     res.send(cat);
   } catch (e) {
-    console.log(e);
-    res.status(403).send('Error creating cat')
+    res.status(405).send('Invalid Input. Error creating cat');
   }
 });
 
-app.delete('/', (req, res) => {
-  res.send('Hello World!');
+app.delete('/:catId', (req, res) => {
+  const { catId } = req.params;
+  if (!catId) {
+    res.status(400).send('Invalid ID supplied, please provide a catId');
+  }
+  res.send({ 'isDeleted': catsDb.deleteCat(catId) });
 });
 
 app.use('/api-docs', (req: any, res: Response, next: NextFunction) => {

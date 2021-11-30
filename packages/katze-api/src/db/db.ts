@@ -7,31 +7,43 @@ export class db {
     private cats = new Map()
   ) { }
 
-  public createCat (cat: CatInput) {
+  public createCat (cat: CatInput): Cat {
     const catId = uuidv4();
 
     const newCat: Cat = {
       id: catId,
       ...cat
     }
-    this.cats.set(newCat.id, cat);
+    this.cats.set(newCat.id, newCat);
     return newCat;
   }
   
-  public deleteCat () {
-
+  public deleteCat (catId: string) {
+    return this.cats.delete(catId);
   }
 
   public updateCat () {
 
   }
 
-  public listCats () {
-    return this.cats;
+  public listCats (options: {
+    page?: number,
+    limit?: number
+  }) {
+    const cats = Array.from(this.cats.values())
+    return cats;
   }
 
-  public searchCats () {
-
+  public searchCats (options: {
+    catId?: string;
+    name?: string;
+    tag?: string;
+  }): Array<Cat> | Cat | undefined {
+    if (options.catId) {
+      return this.cats.get(options.catId)
+    } else {
+      return undefined
+    }
   }
 } 
 
